@@ -21,7 +21,7 @@ npm の `dsh-btw@0.0.3`（MIT, iluluyu）は 0.2.0-rc.2 では動かない。根
    この環境には無い。
 
 そのため、`/btw` の面だけを 0.2.0-rc.2 の契約で書き直した。ホスト側の文脈組み立てを
-クライアントからホストへ移し、専用チャネル `/btw` を `connection.rpc.handle()` で登録する。
+クライアントからホストへ移し、共有 `/api` チャネルに exact ルート `/api/btw-local.<endpoint>`（ask / poll / cancel）を登録する。
 一時チャット機能は、上記の非互換と、ツール付き子エージェントを「履歴に残さない」形で
 安全に焼却する設計が別途必要なため、いったん含めない。
 
@@ -50,16 +50,16 @@ ln -s "$(pwd)/dsh-btw-local" ~/.dsh/local-plugins/dsh-btw-local
 
 その後 `dsh web` を再起動してページをリロードする（ホストのプラグイン一覧は起動時に読む）。
 
-ホスト側は `connection.rpc.handle()` で `/btw` を登録するので、`inject` に `webServer` が要る（無いと登録に失敗して 405 になる。2026-11-06 修正）。
+ホスト側は `connection.fetch.register()` で `/api/btw-local.*` を登録する。専用チャネル（`connection.rpc.handle()`）はプラグインから登録できず 405 になるため、2026-11-06 に切り替えた。
 
 ## 検証
 
 - 構文: `node --check lib/index.js lib/client.js`
-- 自動テストは無い（作成時の一時スクリプトは残っていない）。動作はブラウザで `/btw` を使って確かめる。
+- ルート登録と封筒は `dsh-usage-local/test/integration.test.js`（DSH 本体の rpc.call・/api 振り分けとの結合）で確かめる。文脈抽出・LLM 呼び出しの自動テストは無い。
 
 ## セキュリティ
 
-- `/btw` チャネルは connection の Host/Origin 検査とブラウザ認証を通る（cookie）。認可はブラウザ単位で、
+- `/api/btw-local.*` は `/api` ルートの Host/Origin 検査とブラウザ認証を通る（cookie）。認可はブラウザ単位で、
   ライブな任意セッションの文脈を読める。この GUI は同じ利用者が全セッションを閲覧できる前提なので、セッションの所有者は確かめない。
 - 文脈は「そのホストでライブなセッション」のイベントだけ。保存も送信もしない（LLM への
   1 リクエストを除く）。
