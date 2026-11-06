@@ -1,0 +1,21 @@
+{
+  "name": "dsh-btw-local",
+  "version": "0.1.0",
+  "private": true,
+  "description": "/btw — 会話の文脈だけで答える横質問（履歴に残さない・ツールなし）を DSH Web に足すローカルプラグイン",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "client": {
+      "platform": "web"
+    }
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
