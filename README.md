@@ -37,7 +37,8 @@ npm の `dsh-btw@0.0.3`（MIT, iluluyu）は 0.2.0-rc.2 では動かない。根
 ## インストール
 
 ```sh
-ln -s "$(pwd)/dsh-btw-local" ~/.dsh/local-plugins/dsh-btw-local
+# このリポジトリのルートで実行する
+ln -s "$(pwd)" ~/.dsh/local-plugins/dsh-btw-local
 ```
 
 `~/.dsh/profiles/web/cordis.patch.yml` に追記する:
